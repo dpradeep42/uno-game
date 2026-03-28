@@ -29,7 +29,8 @@ export default function DiscardPile({ discardTop, currentColor, onDrawClick, dra
     prevId.current = discardTop.id;
   }, [discardTop.id]);
 
-  function handleDraw() {
+  function handleDraw(e: React.MouseEvent) {
+    e.stopPropagation();   // prevent double-fire from nested clicks
     if (!canDraw) return;
     setDeckShaking(true);
     setTimeout(() => setDeckShaking(false), 500);
@@ -40,33 +41,51 @@ export default function DiscardPile({ discardTop, currentColor, onDrawClick, dra
 
   return (
     <div className="flex items-center gap-8 justify-center">
-      {/* Draw pile */}
+
+      {/* ── Draw pile ── */}
       <div className="flex flex-col items-center gap-2">
-        <div className={`relative cursor-pointer ${!canDraw ? 'opacity-40 cursor-not-allowed' : ''} ${deckShaking ? 'animate-deckShake' : ''}`}
-          onClick={handleDraw}>
-          {[2,1,0].map(o => (
-            <div key={o} className="absolute" style={{ top: -o*2, left: o*1, zIndex: o === 0 ? 1 : 0 }}>
+        {/* Outer wrapper — single click target, no nested onClick on children */}
+        <div
+          role="button"
+          aria-label="Draw a card"
+          onClick={handleDraw}
+          className={`
+            relative ${deckShaking ? 'animate-deckShake' : ''}
+            ${canDraw ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}
+          `}
+        >
+          {/* Stack illusion (decorative, no onClick) */}
+          {[2, 1].map(o => (
+            <div key={o} className="absolute pointer-events-none"
+              style={{ top: -o * 2, left: o * 1, zIndex: o }}>
               <Card faceDown />
             </div>
           ))}
+          {/* Top card — isStatic so it's always full brightness */}
           <div className="relative z-10">
-            <Card faceDown onClick={canDraw ? handleDraw : undefined} />
+            <Card faceDown isStatic />
           </div>
-          {canDraw && <div className="absolute inset-0 rounded-2xl animate-turnFlash pointer-events-none" />}
+          {/* Pulse ring when it's your turn */}
+          {canDraw && (
+            <div className="absolute inset-0 rounded-2xl animate-turnFlash pointer-events-none" />
+          )}
         </div>
+
         <span className={`text-xs font-bold ${drawPending > 0 ? 'text-red-500' : 'text-gray-400 dark:text-white/40'}`}>
           {drawPending > 0 ? `Draw ${drawPending}` : 'Draw pile'}
         </span>
       </div>
 
-      {/* Discard pile */}
+      {/* ── Discard pile ── */}
       <div className="flex flex-col items-center gap-2">
         <div className={`rounded-2xl transition-all duration-300 ${discardTop.color === 'wild' ? `ring-4 ${ring}` : ''}`}>
-          <Card card={discardTop} landing={landing} />
+          {/* isStatic = always full brightness, no dim, no interactivity */}
+          <Card card={discardTop} landing={landing} isStatic />
         </div>
+
         {discardTop.color === 'wild' ? (
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full shadow-lg"
+            <span className="w-3 h-3 rounded-full"
               style={{ backgroundColor: COLOR_HEX[currentColor], boxShadow: `0 0 8px ${COLOR_HEX[currentColor]}` }} />
             <span className="text-xs font-semibold capitalize" style={{ color: COLOR_HEX[currentColor] }}>
               {currentColor}
@@ -76,6 +95,7 @@ export default function DiscardPile({ discardTop, currentColor, onDrawClick, dra
           <span className="text-xs text-gray-400 dark:text-white/40">Discard</span>
         )}
       </div>
+
     </div>
   );
 }

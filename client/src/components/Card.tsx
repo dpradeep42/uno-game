@@ -8,6 +8,7 @@ interface CardProps {
   small?: boolean;
   landing?: boolean;   // animate card landing on discard
   drawing?: boolean;   // animate card sliding into hand
+  isStatic?: boolean;  // display-only — no dim, no hover, no cursor
   onClick?: () => void;
 }
 
@@ -59,7 +60,7 @@ const WildQuarters = () => (
 
 export default function Card({
   card, faceDown = false, playable = false, highlighted = false,
-  small = false, landing = false, drawing = false, onClick,
+  small = false, landing = false, drawing = false, isStatic = false, onClick,
 }: CardProps) {
   const w   = small ? 'w-10 h-[3.5rem]' : 'w-[4.2rem] h-[6rem] sm:w-[4.6rem] sm:h-[6.5rem]';
   const r   = small ? 'rounded-lg'       : 'rounded-2xl';
@@ -99,9 +100,9 @@ export default function Card({
   const label  = sym(card.value);
   const isWild = card.color === 'wild';
 
-  const glowCls      = playable   ? `ring-2 ${ring} animate-glow shadow-xl ${shadow}` : '';
+  const glowCls      = playable    ? `ring-2 ${ring} animate-glow shadow-xl ${shadow}` : '';
   const highlightCls = highlighted ? `ring-2 ring-white shadow-2xl shadow-white/30 scale-105 -translate-y-3` : '';
-  const dimCls       = !playable && !highlighted ? 'opacity-55 saturate-50 cursor-not-allowed' : '';
+  const dimCls       = (!playable && !highlighted && !isStatic) ? 'opacity-55 saturate-50 cursor-not-allowed' : '';
   const hoverCls     = (playable || highlighted) ? 'hover:-translate-y-4 hover:scale-110 cursor-pointer' : '';
   const landCls      = landing ? 'animate-cardLand' : '';
   const drawCls      = drawing ? 'animate-cardDraw' : '';

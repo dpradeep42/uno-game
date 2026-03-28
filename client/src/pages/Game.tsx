@@ -86,7 +86,7 @@ export default function Game({ gameState }: GameProps) {
   const dirArrow     = gameState.direction === 1 ? '↻' : '↺';
 
   return (
-    <div className="flex flex-col h-screen select-none overflow-hidden">
+    <div className="flex flex-col h-dvh select-none overflow-hidden">
 
       {/* ── Top bar ──────────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between px-3 py-2 glass border-b border-black/5 dark:border-white/5 shrink-0">
@@ -133,9 +133,9 @@ export default function Game({ gameState }: GameProps) {
       )}
 
       {/* ── Opponents ────────────────────────────────────────────────────────── */}
-      <div className="flex gap-2 px-3 py-2 overflow-x-auto shrink-0 justify-center">
+      <div className="flex gap-2 px-3 py-1.5 overflow-x-auto shrink-0 justify-center">
         {opponents.length === 0 ? (
-          <p className="text-gray-400 dark:text-white/25 text-xs py-3">No opponents yet</p>
+          <p className="text-gray-400 dark:text-white/25 text-xs py-2">No opponents yet</p>
         ) : opponents.map(p => (
           <OpponentPanel
             key={p.id} player={p}
@@ -145,7 +145,7 @@ export default function Game({ gameState }: GameProps) {
       </div>
 
       {/* ── Center ───────────────────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-3 px-3 min-h-0">
+      <div className="flex-1 min-h-0 flex flex-col items-center justify-center gap-2 px-3">
         <DiscardPile
           discardTop={gameState.discardTop}
           currentColor={gameState.currentColor}
@@ -154,9 +154,9 @@ export default function Game({ gameState }: GameProps) {
           canDraw={isMyTurn && !gameState.paused && gameState.drawnCardId === null}
         />
 
-        {/* Log */}
-        <div ref={logRef} className="w-full max-w-xs h-14 overflow-y-auto px-2 space-y-0.5">
-          {gameState.log.slice(-5).map((entry, i) => (
+        {/* Log — hidden when center is too small (very short phones) */}
+        <div ref={logRef} className="w-full max-w-xs max-h-12 overflow-y-auto px-2 space-y-0.5">
+          {gameState.log.slice(-4).map((entry, i) => (
             <p key={i} className="text-gray-500 dark:text-white/35 text-[11px] text-center leading-snug truncate">
               {entry}
             </p>
@@ -187,7 +187,7 @@ export default function Game({ gameState }: GameProps) {
       </div>
 
       {/* ── Action row ───────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-center gap-3 px-3 pb-4 shrink-0">
+      <div className="flex items-center justify-center gap-3 px-3 pb-4 shrink-0" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
         {isMyTurn && gameState.drawnCardId !== null && (
           <button onClick={() => socket.emit('end_turn')}
             className="px-5 py-2.5 rounded-2xl font-bold glass
