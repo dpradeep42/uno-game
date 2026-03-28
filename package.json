@@ -1,0 +1,25 @@
+{
+  "name": "uno-game",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k -p \"[{name}]\" -n \"SERVER,CLIENT\" -c \"cyan.bold,magenta.bold\" \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "nodemon --watch server --watch shared -e ts --exec \"ts-node server/index.ts\"",
+    "dev:client": "cd client && npm run dev",
+    "install:all": "npm install && cd client && npm install",
+    "build": "cd client && npm install && npm run build && cd .. && npx tsc",
+    "start": "NODE_ENV=production node dist/server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.5",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

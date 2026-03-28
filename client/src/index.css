@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply bg-gray-900 text-white overflow-hidden;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Prevent pull-to-refresh on mobile */
+html, body {
+  overscroll-behavior: none;
+}
+
+/* Smooth card transitions */
+.card-transition {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-white/20 rounded-full; }

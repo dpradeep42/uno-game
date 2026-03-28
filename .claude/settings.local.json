@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 4 npx ts-node server/index.ts)",
+      "Bash(npx vite:*)"
+    ]
+  }
+}
