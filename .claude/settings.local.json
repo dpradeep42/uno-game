@@ -4,7 +4,11 @@
       "Bash(npm install:*)",
       "Bash(npx tsc:*)",
       "Bash(timeout 4 npx ts-node server/index.ts)",
-      "Bash(npx vite:*)"
+      "Bash(npx vite:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)"
     ]
   }
 }

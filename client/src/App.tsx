@@ -10,13 +10,10 @@ export default function App() {
 
   useEffect(() => {
     socket.connect();
-
-    socket.on('connect', () => setConnected(true));
-    socket.on('disconnect', () => setConnected(false));
-
-    socket.on('room_joined', (state: GameState) => setGameState(state));
-    socket.on('game_updated', (state: GameState) => setGameState(state));
-
+    socket.on('connect',     () => setConnected(true));
+    socket.on('disconnect',  () => setConnected(false));
+    socket.on('room_joined', (s: GameState) => setGameState(s));
+    socket.on('game_updated',(s: GameState) => setGameState(s));
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -27,18 +24,18 @@ export default function App() {
 
   if (!connected) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900">
-        <div className="text-center space-y-3">
-          <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-white/60 text-sm">Connecting to server…</p>
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center space-y-4">
+          <div className="relative w-14 h-14 mx-auto">
+            <div className="absolute inset-0 rounded-full border-4 border-purple-500/30" />
+            <div className="absolute inset-0 rounded-full border-4 border-t-purple-400 animate-spin" />
+          </div>
+          <p className="text-white/50 dark:text-white/50 text-sm font-medium">Connecting…</p>
         </div>
       </div>
     );
   }
 
-  if (!gameState) return <Lobby />;
-
-  if (gameState.status === 'waiting') return <Lobby gameState={gameState} />;
-
+  if (!gameState || gameState.status === 'waiting') return <Lobby gameState={gameState ?? undefined} />;
   return <Game gameState={gameState} />;
 }

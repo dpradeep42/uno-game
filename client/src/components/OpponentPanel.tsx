@@ -7,48 +7,54 @@ interface OpponentPanelProps {
 }
 
 export default function OpponentPanel({ player, isActive }: OpponentPanelProps) {
-  const showUno = player.cardCount === 1;
+  const uno = player.cardCount === 1;
 
   return (
     <div
       className={`
-        flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all
+        flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-2xl transition-all duration-300
         ${isActive
-          ? 'bg-green-500/20 ring-2 ring-green-400 scale-105'
-          : 'bg-white/5'
+          ? 'glass ring-2 ring-green-400/70 scale-105 shadow-lg shadow-green-500/20'
+          : 'glass'
         }
-        ${player.disconnected ? 'opacity-50' : ''}
+        ${player.disconnected ? 'opacity-40 grayscale' : ''}
       `}
     >
+      {/* Avatar circle */}
+      <div className={`
+        w-8 h-8 rounded-full flex items-center justify-center text-sm font-black
+        ${isActive ? 'bg-green-500 text-white shadow-md shadow-green-500/50' : 'bg-white/15 text-white/80'}
+      `}>
+        {player.name[0].toUpperCase()}
+      </div>
+
       {/* Name + badges */}
-      <div className="flex items-center gap-1.5">
-        {isActive && (
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block" />
-        )}
-        <span className={`text-xs font-semibold truncate max-w-[72px] ${isActive ? 'text-green-300' : 'text-white/80'}`}>
-          {player.name}
-        </span>
-        {showUno && (
-          <span className="text-xs font-black text-yellow-300 animate-pulse2 bg-yellow-900/40 px-1 rounded">
+      <div className="flex flex-col items-center gap-0.5">
+        <div className="flex items-center gap-1">
+          {isActive && <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />}
+          <span className={`text-[11px] font-bold truncate max-w-[68px] ${isActive ? 'text-green-300' : 'text-white/75 dark:text-white/75'}`}>
+            {player.name}
+          </span>
+          {player.disconnected && <span className="text-[10px] text-red-400">⚡</span>}
+        </div>
+        {uno && (
+          <span className="text-[10px] font-black text-yellow-300 animate-pulse2 bg-yellow-500/20 px-1.5 py-0.5 rounded-full border border-yellow-500/30">
             UNO!
           </span>
         )}
-        {player.disconnected && (
-          <span className="text-xs text-red-400">●</span>
-        )}
       </div>
 
-      {/* Card stack visualization */}
-      <div className="relative flex items-center justify-center h-14 w-12">
+      {/* Card stack */}
+      <div className="relative flex items-center justify-center" style={{ height: 52, width: 48 }}>
         {player.cardCount === 0 ? (
-          <span className="text-white/30 text-xs">0</span>
+          <span className="text-white/25 text-xs">empty</span>
         ) : (
-          Array.from({ length: Math.min(player.cardCount, 5) }).map((_, i) => (
+          Array.from({ length: Math.min(player.cardCount, 6) }).map((_, i, arr) => (
             <div
               key={i}
               className="absolute"
               style={{
-                transform: `translateX(${(i - Math.min(player.cardCount, 5) / 2) * 4}px) rotate(${(i - 2) * 3}deg)`,
+                transform: `translateX(${(i - arr.length / 2) * 5}px) rotate(${(i - arr.length / 2) * 4}deg)`,
                 zIndex: i,
               }}
             >
@@ -58,8 +64,8 @@ export default function OpponentPanel({ player, isActive }: OpponentPanelProps) 
         )}
       </div>
 
-      <span className="text-xs text-white/50">
-        {player.cardCount} card{player.cardCount !== 1 ? 's' : ''}
+      <span className="text-[10px] text-white/40 dark:text-white/40">
+        {player.cardCount}
       </span>
     </div>
   );
